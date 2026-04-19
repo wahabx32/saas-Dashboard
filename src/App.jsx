@@ -431,14 +431,14 @@ const DashboardPage = () => {
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: 16 }}>
+      <div className="stat-grid" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: 16 }}>
         <StatCard title="Total Revenue" value="$1.04M" change={14.2} icon="dollar" color="indigo" loading={loading} />
         <StatCard title="Active Users" value="3,480" change={8.7} icon="users" color="violet" loading={loading} />
         <StatCard title="MRR Growth" value="+18.4%" change={3.1} icon="trendingUp" color="emerald" loading={loading} />
         <StatCard title="Avg. Session" value="4m 32s" change={-2.4} icon="zap" color="amber" loading={loading} />
       </div>
 
-      <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr", gap: 20 }}>
+      <div className="chart-grid" style={{ display: "grid", gridTemplateColumns: "2fr 1fr", gap: 20 }}>
         <div style={{ background: dark ? "rgba(255,255,255,0.03)" : "rgba(255,255,255,0.9)", border: `1px solid ${dark ? "rgba(255,255,255,0.07)" : "rgba(0,0,0,0.06)"}`, borderRadius: 16, padding: "22px 22px 16px" }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
             <div>
@@ -908,7 +908,7 @@ export default function App() {
       <AppContext.Provider value={{ notifOpen, setNotifOpen }}>
         <style>{`
           * { box-sizing: border-box; margin: 0; padding: 0; }
-          body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; }
+          body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; width: 100%; overflow-x: hidden; }
           @keyframes pulse { 0%,100% { opacity:1 } 50% { opacity:0.4 } }
           @keyframes bounce { 0%,80%,100% { transform: scale(0) } 40% { transform: scale(1) } }
           ::-webkit-scrollbar { width: 5px; height: 5px; }
@@ -920,12 +920,40 @@ export default function App() {
             .sidebar-desktop { display: none !important; }
           }
           select option { background: #1e1e2e; color: #fff; }
+          
+          /* Responsive container fixes */
+          .dashboard-container {
+            width: 100%;
+            max-width: 100%;
+            overflow-x: hidden;
+          }
+          
+          /* Responsive grid for stat cards */
+          @media (max-width: 1200px) {
+            .stat-grid { grid-template-columns: repeat(2, 1fr) !important; }
+          }
+          @media (max-width: 600px) {
+            .stat-grid { grid-template-columns: 1fr !important; }
+          }
+          
+          /* Responsive chart containers */
+          @media (max-width: 900px) {
+            .chart-grid { grid-template-columns: 1fr !important; }
+          }
+          
+          /* Responsive main content */
+          @media (max-width: 768px) {
+            main { padding: 16px !important; }
+          }
+          @media (max-width: 480px) {
+            main { padding: 12px !important; }
+          }
         `}</style>
 
         {!authed ? (
           <AuthPage mode={authMode} onSwitch={() => setAuthMode(m => m === "login" ? "signup" : "login")} onAuth={() => setAuthed(true)} />
         ) : (
-          <div className="w-screen min-h-screen" style={{ display: "flex", background: bg, transition: "background 0.3s" }}>
+          <div className="dashboard-container" style={{ display: "flex", width: "100%", background: bg, transition: "background 0.3s" }}>
             {/* Mobile overlay sidebar */}
             {mobileMenuOpen && (
               <>
@@ -941,9 +969,9 @@ export default function App() {
               <Sidebar page={page} setPage={setPage} collapsed={collapsed} setCollapsed={setCollapsed} />
             </div>
 
-            <div style={{ flex: 1, display: "flex", flexDirection: "column", minWidth: 0, minHeight: "100vh" }}>
+            <div style={{ flex: 1, display: "flex", flexDirection: "column", minWidth: 0, minHeight: "100vh", width: "100%" }}>
               <Topbar page={page} mobileMenuOpen={mobileMenuOpen} setMobileMenuOpen={setMobileMenuOpen} />
-              <main style={{ flex: 1, padding: "28px 28px", overflowY: "auto" }}>
+              <main style={{ flex: 1, padding: "28px 28px", overflowY: "auto", width: "100%" }}>
                 {page === "notifications" ? (
                   <div style={{ display: "flex", flexDirection: "column", gap: 10, maxWidth: 640 }}>
                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
